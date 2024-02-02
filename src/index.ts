@@ -1,7 +1,9 @@
 import ByteReader from './ByteReader'
-import BinaryParser from './BinaryParser'
+import BinaryParser, { ParserResult } from './BinaryParser'
 
-export function parseFile(buffer: ArrayBuffer) {
+type Result = Omit<ParserResult, 'reader' | 'arrays' | 'arrayIndex'>
+
+export function parseFile(buffer: ArrayBuffer): Result {
     const reader = new ByteReader(buffer)
     if (reader.String(7) !== '<roblox') {
         throw new Error('Invalid RBXM/RBXL file');
