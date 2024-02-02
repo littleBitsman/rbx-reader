@@ -1,0 +1,7 @@
+src
+src/*
+test
+test/*
+node_modules
+node_modules/*
+.gitignore
