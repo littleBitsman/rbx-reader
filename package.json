@@ -1,0 +1,19 @@
+{
+  "name": "rbx-reader",
+  "version": "1.0.0",
+  "description": "A NPM module for reading .rbxm and .rbxl files",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littleBitsman/rbx-reader.git"
+  },
+  "author": "littleBitsman",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/littleBitsman/rbx-reader/issues"
+  },
+  "homepage": "https://github.com/littleBitsman/rbx-reader#readme"
+}
