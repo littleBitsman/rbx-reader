@@ -75,15 +75,23 @@ class Instance {
     Properties: object = {};
 
 	get ClassName(): string {
-		return this.Properties['ClassName']
+		return this.Properties['ClassName'].value
 	}
 
 	get Name(): string {
-		return this.Properties['Name']
+		return this.Properties['Name'].value
 	}
 
-	get Parent(): Instance | undefined {
-		return this.Properties['Parent']
+	get Parent(): Instance | InstanceRoot | undefined {
+		return this.Properties['Parent'].value
+	}
+
+	getFullName() {
+		if (this.Parent && !(this.Parent instanceof InstanceRoot)) {
+			return `${this.Parent.getFullName()}.${this.Name}`
+		} else {
+			return `${this.Name}`
+		}
 	}
 
 	static new(className: string) {
