@@ -125,6 +125,18 @@ class Instance {
 		return descriptor ? descriptor.value : undefined
 	}
 
+	getChildren() {
+		return this.Children
+	}
+
+	getDescendants(): Instance[] {
+		const desc = this.Children
+		desc.forEach(inst => {
+			desc.push(...inst.getDescendants())
+		})
+		return desc
+	}
+
 	hasProperty(name: string, caseInsensitive: boolean = false) {
 		return name in this.Properties || caseInsensitive && !Object.entries(this.Properties).find(x => x[0].toLowerCase() === name.toLowerCase())
 	}
