@@ -86,7 +86,7 @@ class Instance {
 		return this.Properties['Parent'].value
 	}
 
-	getFullName() {
+	getFullName(): string {
 		if (this.Parent && !(this.Parent instanceof InstanceRoot)) {
 			return `${this.Parent.getFullName()}.${this.Name}`
 		} else {
