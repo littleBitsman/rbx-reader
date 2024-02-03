@@ -74,6 +74,18 @@ class Instance {
     Children: Instance[] = [];
     Properties: object = {};
 
+	get ClassName(): string {
+		return this.Properties['ClassName']
+	}
+
+	get Name(): string {
+		return this.Properties['Name']
+	}
+
+	get Parent(): Instance | undefined {
+		return this.Properties['Parent']
+	}
+
 	static new(className: string) {
 		assert(typeof className === 'string', 'className is not a string')
 		return new Instance(className)
