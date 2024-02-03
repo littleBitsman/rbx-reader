@@ -60,10 +60,9 @@ const InstanceUtils = {
 
 class InstanceRoot extends Array<Instance> {
 	getDescendants(): Instance[] {
-		const l: Instance[] = []
-		l.push(...this)
+		const l = this as Instance[]
 		l.forEach(v => l.push(...v.getDescendants()))
-		return []
+		return l
 	}
 
 	findFirstChild(name: string, recursive = false) { return InstanceUtils.findFirstChild(this, name, recursive) }
