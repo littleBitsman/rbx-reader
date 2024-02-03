@@ -9,6 +9,12 @@
     "url": "git+https://github.com/littleBitsman/rbx-reader.git"
   },
   "author": "littleBitsman",
+  "contributors": [
+    {
+      "name": "shiinazzz",
+      "url": "https://www.npmjs.com/~shiinazzz"
+    }
+  ],
   "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/littleBitsman/rbx-reader/issues"
