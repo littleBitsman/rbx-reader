@@ -59,7 +59,7 @@ const InstanceUtils = {
 }
 
 class InstanceRoot extends Array<Instance> {
-	get getDescendants(): Instance[] {
+	getDescendants(): Instance[] {
 		const l: Instance[] = []
 		l.push(...this)
 		l.forEach(v => l.push(...v.getDescendants()))
