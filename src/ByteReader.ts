@@ -47,7 +47,7 @@ class ByteReader extends Uint8Array {
 		const double = 2 ** (exp - 1023) * (1 + frac)
 		return neg ? -double : double
 	}
-
+	
 	constructor(...args: any[]) {
 		if(args[0] instanceof Uint8Array) {
 			args[1] = args[0].byteOffset
