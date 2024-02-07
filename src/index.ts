@@ -5,7 +5,7 @@ import { readFileSync, PathOrFileDescriptor } from 'node:fs'
 
 export type Result = Omit<ParserResult, 'reader' | 'arrays' | 'arrayIndex' | 'sharedStrings' | 'groups' | 'meta'>
 
-export function parseFile(buffer: ArrayBuffer): Result {
+export function parseBuffer(buffer: ArrayBuffer): Result {
     if (!Buffer.from(buffer).includes(0x00)) {
         return XmlParser.parse(buffer)
     }
@@ -21,5 +21,5 @@ export function parseFile(buffer: ArrayBuffer): Result {
 }
 
 export function readFile(file: PathOrFileDescriptor) {
-    return parseFile(readFileSync(file))
+    return parseBuffer(readFileSync(file))
 }
