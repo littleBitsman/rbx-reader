@@ -6,9 +6,9 @@ import { readFileSync, PathOrFileDescriptor } from 'node:fs'
 export type Result = Omit<ParserResult, 'reader' | 'arrays' | 'arrayIndex' | 'sharedStrings' | 'groups' | 'meta'>
 
 export function parseBuffer(buffer: ArrayBuffer): Result {
-    if (!Buffer.from(buffer).includes(0x00)) {
+    try {
         return XmlParser.parse(buffer)
-    }
+    } catch {}
     const reader = new ByteReader(buffer)
     if (reader.String(7) !== '<roblox')
         throw new Error('Invalid RBXM/RBXL file');
