@@ -8,12 +8,12 @@ export type Result = Omit<ParserResult, 'reader' | 'arrays' | 'arrayIndex' | 'sh
 export function parseBuffer(buffer: ArrayBuffer): Result {
     try {
         return XmlParser.parse(buffer)
-    } catch {}
+    } catch { }
     const reader = new ByteReader(buffer)
     if (reader.String(7) !== '<roblox')
         throw new Error('Invalid RBXM/RBXL file');
 
-    if(reader.Byte() === 0x21) {
+    if (reader.Byte() === 0x21) {
         const { result, instances } = BinaryParser.parse(buffer)
         return { result, instances }
     }

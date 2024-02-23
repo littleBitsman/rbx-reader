@@ -3,64 +3,68 @@ import assert from 'assert'
 const InstanceUtils = {
 	findFirstChild(target: Instance | any, name: string, recursive = false): Instance | undefined {
 		const children = target instanceof Instance ? target.Children : target
-		
-		for(const child of children) {
-			if(child.getProperty('Name') === name) {
+
+		for (const child of children) {
+			if (child.getProperty('Name') === name) {
 				return child
 			}
 		}
-		
-		if(recursive) {
+
+		if (recursive) {
 			const arrays = [children]
-			
-			while(arrays.length) {
-				for(const desc of arrays.shift()) {
-					if(desc.getProperty('Name') === name) {
+
+			while (arrays.length) {
+				for (const desc of arrays.shift()) {
+					if (desc.getProperty('Name') === name) {
 						return desc
 					}
-					
-					if(desc.Children.length) {
+
+					if (desc.Children.length) {
 						arrays.push(desc.Children)
 					}
 				}
 			}
 		}
-		
+
 		return undefined
 	},
-	
+
 	findFirstChildOfClass(target: Instance | any, className: string, recursive = false): Instance | undefined {
 		const children = target instanceof Instance ? target.Children : target
-		
-		for(const child of children) {
-			if(child.getProperty('ClassName') === className) {
+
+		for (const child of children) {
+			if (child.getProperty('ClassName') === className) {
 				return child
 			}
 		}
-		
-		if(recursive) {
+
+		if (recursive) {
 			const arrays = [children]
-			
-			while(arrays.length) {
-				for(const desc of arrays.shift()) {
-					if(desc.getProperty('ClassName') === className) {
+
+			while (arrays.length > 0) {
+				for (const desc of arrays.shift()) {
+					if (desc.getProperty('ClassName') === className) {
 						return desc
 					}
-					
-					if(desc.Children.length) {
+
+					if (desc.Children.length) {
 						arrays.push(desc.Children)
 					}
 				}
 			}
 		}
-		
+
 		return undefined
 	}
 }
 
 class InstanceRoot extends Array<Instance> {
+	getChildren(): Instance[] {
+		return this as Instance[]
+	}
+
 	getDescendants(): Instance[] {
-		const l = this as Instance[]
+		const l = this.getChildren()
 		l.forEach(v => l.push(...v.getDescendants()))
 		return l
 	}
@@ -70,8 +74,8 @@ class InstanceRoot extends Array<Instance> {
 }
 
 class Instance {
-    Children: Instance[] = [];
-    Properties: object = {};
+	readonly Children: Instance[] = [];
+	readonly Properties: object = {};
 
 	get ClassName(): string {
 		return this.Properties['ClassName'].value
@@ -100,7 +104,7 @@ class Instance {
 
 	constructor(className: string) {
 		assert(typeof className === 'string', 'className is not a string')
-		
+
 		this.Children = []
 
 		this.setProperty('ClassName', className, 'string')
@@ -109,43 +113,37 @@ class Instance {
 	}
 
 	setProperty(name: string, value: any, type: any) {
-		if(!type) {
-			if(typeof value === 'boolean') {
+		if (!type) {
+			if (typeof value === 'boolean') {
 				type = 'bool'
-			} else if(value instanceof Instance) {
+			} else if (value instanceof Instance) {
 				type = 'Instance'
 			} else {
-				throw new TypeError('You need to specify property type')
+				throw new TypeError('You need to specify property type since it cannot be inferred')
 			}
 		}
 
 		var descriptor = this.Properties[name]
-		if(descriptor) {
-			assert(descriptor.type === type, `Property type mismatch ${type} !== ${descriptor.type}`)
+		if (descriptor) {
+			assert(descriptor.type === type, `Property type mismatch: ${type} !== ${descriptor.type}`)
 
-			if(name === 'Parent' && descriptor.value instanceof Instance) {
+			if (name === 'Parent' && descriptor.value instanceof Instance) {
 				const index = descriptor.value.Children.indexOf(this)
-				if(index !== -1) {
+				if (index !== -1)
 					descriptor.value.Children.splice(index, 1)
-				}
 			}
 
 			descriptor.value = value
-		} else {
+		} else
 			descriptor = this.Properties[name] = { type, value }
-		}
 
-		if(name === 'Parent') {
-			if(descriptor.value instanceof Instance) {
-				descriptor.value.Children.push(this)
-			}
-		}
+		if (name === 'Parent' && descriptor.value instanceof Instance)
+			descriptor.value.Children.push(this)
 
-		if(name !== 'Children' && name !== 'Properties' && !(name in Object.getPrototypeOf(this))) {
-			(this as any)[name] = value
-		}
+		if (name !== 'Children' && name !== 'Properties' && !(name in Object.getPrototypeOf(this)))
+			this[name] = value
 	}
-	
+
 	getProperty(name: string, caseInsensitive: boolean = false) {
 		const descriptor = this.Properties[name] || caseInsensitive && Object.entries(this.Properties).find(x => x[0].toLowerCase() === name.toLowerCase())?.[1]
 		return descriptor ? descriptor.value : undefined
@@ -166,9 +164,9 @@ class Instance {
 	hasProperty(name: string, caseInsensitive: boolean = false) {
 		return name in this.Properties || caseInsensitive && !Object.entries(this.Properties).find(x => x[0].toLowerCase() === name.toLowerCase())
 	}
-	
+
 	findFirstChild(name: string, recursive = false) { return InstanceUtils.findFirstChild(this, name, recursive) }
 	findFirstChildOfClass(className: string, recursive = false) { return InstanceUtils.findFirstChildOfClass(this, className, recursive) }
 }
 
-export {Instance, InstanceRoot}
+export { Instance, InstanceRoot }
