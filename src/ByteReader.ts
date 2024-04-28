@@ -61,13 +61,13 @@ class ByteReader extends Uint8Array {
 		this.index = 0
 	}
 
-	SetIndex(n: any) { this.index = n }
+	SetIndex(n: number) { this.index = n }
 	GetIndex() { return this.index }
 	GetRemaining() { return this.length - this.index }
 	GetLength() { return this.length }
-	Jump(n: any) { this.index += n }
+	Jump(n: number) { this.index += n }
 
-	Array(n: any) {
+	Array(n: number) {
 		const result = new Uint8Array(this.buffer, this.index, n)
 		this.index += n
 		return result
@@ -103,7 +103,7 @@ class ByteReader extends Uint8Array {
 	}
 	DoubleBE() { return ByteReader.ParseDouble(this.UInt32BE(), this.UInt32BE()) }
 
-	String(n: any) {
+	String(n: number) {
 		return bufferToString(this.Array(n))
 	}
 

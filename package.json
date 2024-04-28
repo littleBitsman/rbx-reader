@@ -28,6 +28,8 @@
     "jsdom": "^24.0.0"
   },
   "scripts": {
-    "publish": "npm i; tsc; npm publish"
+    "publish": "npm i && npm run build && npm publish",
+    "build": "tsc && npm run copy-wasm",
+    "copy-wasm": "xcopy .\\src\\attributes-parser\\* dist\\attributes-parser /e /h /y"
   }
 }

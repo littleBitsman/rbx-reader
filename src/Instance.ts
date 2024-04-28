@@ -73,9 +73,29 @@ class InstanceRoot extends Array<Instance> {
 	findFirstChildOfClass(className: string, recursive = false) { return InstanceUtils.findFirstChildOfClass(this, className, recursive) }
 }
 
+
+interface BoolAttr { Bool: boolean }
+interface BinaryStringAttr { BinaryString: string}
+interface NumberSequenceKeypointAttr { time: number, value: number, envelope: number }
+interface NumberSequenceAttr { NumberSequence: { keypoints: NumberSequenceKeypointAttr[] }}
+interface RectAttr { Rect: number[][] }
+interface CFrameAttr { CFrame: { position: number[], orientation: number[][] } }
+interface NumberRangeAttr { NumberRange: number[] }
+interface ColorSequenceKeypointAttr { time: number, color: number[][] }
+interface ColorSequenceAttr { ColorSequence: { keypoints: ColorSequenceKeypointAttr[] }}
+interface Vector3Attr { Vector3: number[] }
+interface UDim2Attr { UDim2: number[][] }
+interface Vector2Attr { Vector2: number[] }
+interface Color3Attr { Color3: number[] }
+interface BrickColorAttr { BrickColor: number }
+interface Float64Attr { Float64: number }
+interface UDimAttr { UDim: number[] }
+type AttributeValue = Partial<BoolAttr | BinaryStringAttr | NumberSequenceAttr | RectAttr | CFrameAttr | NumberRangeAttr | ColorSequenceAttr | Vector3Attr | UDim2Attr | Vector2Attr | Color3Attr | BrickColorAttr | Float64Attr | UDimAttr>
+
 class Instance {
 	readonly Children: Instance[] = [];
 	readonly Properties: object = {};
+	Attributes: {[key: string]: AttributeValue} = {};
 
 	get ClassName(): string {
 		return this.Properties['ClassName'].value
@@ -167,6 +187,10 @@ class Instance {
 
 	findFirstChild(name: string, recursive = false) { return InstanceUtils.findFirstChild(this, name, recursive) }
 	findFirstChildOfClass(className: string, recursive = false) { return InstanceUtils.findFirstChildOfClass(this, className, recursive) }
+
+	getAttribute(name: string): AttributeValue | undefined {
+		return this.Attributes[name]
+	}
 }
 
 export { Instance, InstanceRoot }

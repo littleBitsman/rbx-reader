@@ -1,5 +1,6 @@
 import ByteReader from './ByteReader'
 import { Instance, InstanceRoot } from './Instance'
+import { parse_attrs } from './attributes-parser/attributes_parser'
 
 export interface ParserResult {
 	result: InstanceRoot,
@@ -506,13 +507,22 @@ const BinaryParser = {
 		}
 
 		for (var index = 0; index < instCount; index++) {
-			if (isOptional) {
-				if (chunk.Byte() === 0) {
+			if (isOptional)
+				if (chunk.Byte() === 0)
 					continue
-				}
-			}
 
-			group.Objects[index].setProperty(prop, values[index], resultTypeName)
+			if (prop == 'AttributesSerialize') {
+				try {
+					const result: Map<string, object> = parse_attrs(Buffer.from(values[index]))
+					result.forEach((v, k) => {
+						group.Objects[index].Attributes[k] = v
+					})
+				} catch {
+					group.Objects[index].setProperty(prop, values[index], resultTypeName)
+				}
+			} else {
+				group.Objects[index].setProperty(prop, values[index], resultTypeName)
+			}
 		}
 	},
 
