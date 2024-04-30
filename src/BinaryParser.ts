@@ -574,7 +574,10 @@ const BinaryParser = {
 								scale: v.UDim[0],
 								offset: v.UDim[1]
 							}
-						else finalAttrs[k] = v 
+						else if (AttrAssertions.isBrickColorAttr(v))
+							finalAttrs[k] = {
+								...v
+							}
 					})
 
 					group.Objects[index].Attributes = finalAttrs
