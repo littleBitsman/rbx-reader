@@ -94,4 +94,5 @@ export function parseAttributes(attributesSerializeBuf: ArrayBufferLike) {
                 ...v
             }
     })
+    return Attributes
 }
