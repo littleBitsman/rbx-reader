@@ -81,7 +81,7 @@ interface NumberSequenceAttr { NumberSequence: { keypoints: NumberSequenceKeypoi
 interface RectAttr { Rect: number[][] }
 interface CFrameAttr { CFrame: { position: number[], orientation: number[][] } }
 interface NumberRangeAttr { NumberRange: number[] }
-interface ColorSequenceKeypointAttr { time: number, color: number[][] }
+interface ColorSequenceKeypointAttr { time: number, color: number[] }
 interface ColorSequenceAttr { ColorSequence: { keypoints: ColorSequenceKeypointAttr[] }}
 interface Vector3Attr { Vector3: number[] }
 interface UDim2Attr { UDim2: number[][] }
@@ -90,7 +90,89 @@ interface Color3Attr { Color3: number[] }
 interface BrickColorAttr { BrickColor: number }
 interface Float64Attr { Float64: number }
 interface UDimAttr { UDim: number[] }
-type AttributeValue = Partial<BoolAttr | BinaryStringAttr | NumberSequenceAttr | RectAttr | CFrameAttr | NumberRangeAttr | ColorSequenceAttr | Vector3Attr | UDim2Attr | Vector2Attr | Color3Attr | BrickColorAttr | Float64Attr | UDimAttr>
+export type AttributeValue = Partial<BoolAttr | BinaryStringAttr | NumberSequenceAttr | RectAttr | CFrameAttr | NumberRangeAttr | ColorSequenceAttr | Vector3Attr | UDim2Attr | Vector2Attr | Color3Attr | BrickColorAttr | Float64Attr | UDimAttr>
+
+function isBoolAttr(obj: any): obj is BoolAttr {
+	return typeof obj == 'object' && typeof obj.Bool == 'boolean'
+}
+function isStringAttr(obj: any): obj is BinaryStringAttr {
+	return typeof obj == 'object' && typeof obj.BinaryString == 'string'
+}
+function isNumSequenceKeyPtAttr(obj: any): obj is NumberSequenceKeypointAttr {
+	return typeof obj == 'object' && typeof obj.time == 'number' && typeof obj.value == 'number' && typeof obj.envelope == 'number'
+}
+function isNumberSequenceAttr(obj: any): obj is NumberSequenceAttr {
+	return typeof obj == 'object' && typeof obj.NumberSequence == 'object' && 
+		Array.isArray(obj.NumberSequence.keypoints) && obj.NumberSequence.keypoints.every(isNumSequenceKeyPtAttr)
+}
+function isRectAttr(obj: any): obj is RectAttr {
+	return typeof obj == 'object' && Array.isArray(obj.Rect) && obj.Rect.length == 2 &&
+		obj.Rect.every((v: unknown) => Array.isArray(v) && v.length == 2)
+}
+function isCFrameAttr(obj: any): obj is CFrameAttr {
+	return typeof obj == 'object' && typeof obj.CFrame == 'object' && Array.isArray(obj.CFrame.position) &&
+		obj.CFrame.position.length == 3 && obj.CFrame.position.every((v: unknown) => typeof v == 'number') && 
+		Array.isArray(obj.CFrame.orientation) && obj.CFrame.orientation.length == 3 && 
+		obj.CFrame.orientation.every((v: unknown) => Array.isArray(v) && 
+			v.length == 3 && v.every((v2: unknown) => typeof v2 == 'number'))
+}
+function isNumberRangeAttr(obj: any): obj is NumberRangeAttr {
+	return typeof obj == 'object' && Array.isArray(obj.NumberRange) && 
+		obj.NumberRange.every((v: unknown) => typeof v == 'number') && obj.NumberRange.length == 2
+}
+function isColorSequenceKeyPtAttr(obj: any): obj is ColorSequenceKeypointAttr {
+	return typeof obj == 'object' && typeof obj.time == 'number' && Array.isArray(obj.color)
+		&& obj.color.every((v: unknown) => typeof v == 'number') && obj.color.length == 3
+}
+function isColorSequenceAttr(obj: any): obj is ColorSequenceAttr {
+	return typeof obj == 'object' && typeof obj.ColorSequence == 'object' &&
+		Array.isArray(obj.ColorSequence.keypoints) && obj.ColorSequence.keypoints.every(isColorSequenceKeyPtAttr)
+}
+function isVector3Attr(obj: any): obj is Vector3Attr {
+	return typeof obj == 'object' && Array.isArray(obj.Vector3) && 
+		obj.Vector3.every((v: unknown) => typeof v == 'number') && obj.Vector3.length == 3
+}
+function isUDim2Attr(obj: any): obj is UDim2Attr {
+	return typeof obj == 'object' && Array.isArray(obj.UDim2) && obj.UDim2.length == 2 &&
+		obj.UDim2.every((v: unknown) => Array.isArray(v) && v.every((v2: unknown) => typeof v2 == 'number') && 
+			v.length == 2)
+}
+function isVector2Attr(obj: any): obj is Vector2Attr {
+	return typeof obj == 'object' && Array.isArray(obj.Vector2) && 
+		obj.Vector2.every((v: unknown) => typeof v == 'number') && obj.Vector2.length == 2
+}
+function isColor3Attr(obj: any): obj is Color3Attr {
+	return typeof obj == 'object' && Array.isArray(obj.Color3) && 
+		obj.Color3.every((v: unknown) => typeof v == 'number') && obj.Color3.length == 3
+}
+function isBrickColorAttr(obj: any): obj is BrickColorAttr {
+	return typeof obj == 'object' && typeof obj.BrickColor == 'number'
+}
+function isNumberAttr(obj: any): obj is Float64Attr {
+	return typeof obj == 'object' && typeof obj.Float64 == 'number'
+}
+function isUDimAttr(obj: any): obj is UDimAttr {
+	return typeof obj == 'object' && Array.isArray(obj.UDim) && obj.UDim.length == 2 &&
+		obj.UDim.every((v: unknown) => typeof v == 'number')
+}
+
+export const AttrAssertions = {
+	isBoolAttr,
+	isStringAttr,
+	isNumberSequenceAttr,
+	isRectAttr,
+	isCFrameAttr,
+	isNumberRangeAttr,
+	isColorSequenceAttr,
+	isVector3Attr,
+	isUDim2Attr,
+	isVector2Attr,
+	isColor3Attr,
+	isBrickColorAttr,
+	isNumberAttr,
+	isUDimAttr,
+	isFloat64Attr: isNumberAttr
+}
 
 class Instance {
 	readonly Children: Instance[] = [];

@@ -1,5 +1,5 @@
 import ByteReader from './ByteReader'
-import { Instance, InstanceRoot } from './Instance'
+import { AttrAssertions, AttributeValue, Instance, InstanceRoot } from './Instance'
 import { parse_attrs } from './attributes-parser/attributes_parser'
 
 export interface ParserResult {
@@ -514,9 +514,70 @@ const BinaryParser = {
 			if (prop == 'AttributesSerialize') {
 				try {
 					const result: Map<string, object> = parse_attrs(Buffer.from(values[index]))
+					const Attributes: {[key: string]: AttributeValue} = {}
 					result.forEach((v, k) => {
-						group.Objects[index].Attributes[k] = v
+						Attributes[k] = v
 					})
+
+					const finalAttrs: {[key: string]: any} = {}
+					Object.keys(Attributes).forEach(k => {
+						const v = Attributes[k]
+						if (AttrAssertions.isBoolAttr(v)) 
+							finalAttrs[k] = v.Bool
+						else if (AttrAssertions.isStringAttr(v)) 
+							finalAttrs[k] = v.BinaryString
+						else if (AttrAssertions.isNumberSequenceAttr(v)) 
+							finalAttrs[k] = v.NumberSequence
+						else if (AttrAssertions.isRectAttr(v)) 
+							finalAttrs[k] = v.Rect
+						else if (AttrAssertions.isCFrameAttr(v)) 
+							finalAttrs[k] = v.CFrame
+						else if (AttrAssertions.isNumberRangeAttr(v)) 
+							finalAttrs[k] = {
+								lower: v.NumberRange[0],
+								upper: v.NumberRange[1]
+							}
+						else if (AttrAssertions.isColorSequenceAttr(v))
+							finalAttrs[k] = v.ColorSequence
+						else if (AttrAssertions.isVector3Attr(v))
+							finalAttrs[k] = {
+								x: v.Vector3[0],
+								y: v.Vector3[1],
+								z: v.Vector3[2]
+							}
+						else if (AttrAssertions.isUDim2Attr(v)) 
+							finalAttrs[k] = {
+								x: {
+									scale: v.UDim2[0][0],
+									offset: v.UDim2[0][1]
+								},
+								y: {
+									scale: v.UDim2[1][0],
+									offset: v.UDim2[1][1]
+								}
+							}
+						else if (AttrAssertions.isVector2Attr(v)) 
+							finalAttrs[k] = {
+								x: v.Vector2[0],
+								y: v.Vector2[1]
+							}
+						else if (AttrAssertions.isColor3Attr(v))
+							finalAttrs[k] = {
+								r: v.Color3[0],
+								g: v.Color3[1],
+								b: v.Color3[2]
+							}
+						else if (AttrAssertions.isNumberAttr(v))
+							finalAttrs[k] = v.Float64
+						else if (AttrAssertions.isUDimAttr(v)) 
+							finalAttrs[k] = {
+								scale: v.UDim[0],
+								offset: v.UDim[1]
+							}
+						else finalAttrs[k] = v 
+					})
+
+					group.Objects[index].Attributes = finalAttrs
 				} catch {
 					group.Objects[index].setProperty(prop, values[index], resultTypeName)
 				}
