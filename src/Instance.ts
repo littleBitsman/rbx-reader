@@ -174,10 +174,12 @@ export const AttrAssertions = {
 	isFloat64Attr: isNumberAttr
 }
 
+type AttributeJSValue = boolean | string | number | NumberSequenceKeypointAttr[] | number[][] | { position: number[], orientation: number[][] } | { lower: number, upper: number } | ColorSequenceKeypointAttr[] | { x: number, y: number, z: number } | { x: { scale: number, offset: number }, y: { scale: number, offset: number }} | { x: number, y: number } | { r: number, g: number, b: number } | { scale: number, offset: number } | { BrickColor: number }
+
 class Instance {
 	readonly Children: Instance[] = [];
 	readonly Properties: object = {};
-	Attributes: {[key: string]: AttributeValue} = {};
+	Attributes: {[key: string]: AttributeJSValue} = {};
 
 	get ClassName(): string {
 		return this.Properties['ClassName'].value
@@ -270,7 +272,7 @@ class Instance {
 	findFirstChild(name: string, recursive = false) { return InstanceUtils.findFirstChild(this, name, recursive) }
 	findFirstChildOfClass(className: string, recursive = false) { return InstanceUtils.findFirstChildOfClass(this, className, recursive) }
 
-	getAttribute(name: string): AttributeValue | undefined {
+	getAttribute(name: string): AttributeJSValue | undefined {
 		return this.Attributes[name]
 	}
 }
