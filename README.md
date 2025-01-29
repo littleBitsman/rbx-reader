@@ -9,5 +9,5 @@ Basic reading:
 const fs = require("node:fs")
 const reader = require("rbx-reader")
 const buf = fs.readFileSync("./path/to/roblox/file.rbxm") // Can also be an .rbxl
-const result = reader.parseFile(buf)
+const result = reader.parseBuffer(buf)
 ```
