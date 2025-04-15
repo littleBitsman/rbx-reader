@@ -1,6 +1,6 @@
 {
   "name": "rbx-reader",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "description": "A NPM module for reading .rbxm(x) and .rbxl(x) files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,7 +28,6 @@
     "jsdom": "^26.1.0"
   },
   "scripts": {
-    "publish": "npm i && npm run build && npm publish",
     "build": "tsc && npm run copy-wasm",
     "copy-wasm": "xcopy .\\src\\attributes-parser\\* dist\\attributes-parser /e /h /y"
   }
