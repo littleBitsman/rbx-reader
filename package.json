@@ -1,6 +1,6 @@
 {
   "name": "rbx-reader",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "A NPM module for reading .rbxm(x) and .rbxl(x) files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "jsdom": "^26.0.0"
+    "jsdom": "^26.1.0"
   },
   "scripts": {
     "publish": "npm i && npm run build && npm publish",
