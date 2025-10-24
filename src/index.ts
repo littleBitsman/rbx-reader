@@ -13,7 +13,8 @@ export function parseBuffer(buffer: ArrayBuffer): Result {
     } catch { }
     const reader = new ByteReader(buffer)
 
-    if (Buffer.from(reader.Array(7)).toString('utf8') !== '<roblox')
+    const header = reader.String(7);
+    if (header !== '<roblox')
         throw new Error('Invalid RBXM/RBXL file')
 
     if (reader.Byte() === 0x21) {
