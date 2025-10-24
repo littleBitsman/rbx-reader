@@ -49,17 +49,25 @@ class ByteReader extends Uint8Array {
 	}
 	
 	constructor(...args: any[]) {
-		if(args[0] instanceof Uint8Array) {
-			args[1] = args[0].byteOffset
-			args[2] = args[0].byteLength
-			args[0] = args[0].buffer
-		}
-		
-		assert(args[0] instanceof ArrayBuffer, 'buffer is not an ArrayBuffer')
-		super(args[0], args[1], args[2])
+        let inputBuffer: Uint8Array;
 
-		this.index = 0
-	}
+        if (args[0] instanceof ArrayBuffer) {
+            inputBuffer = new Uint8Array(args[0]);
+        } else if (ArrayBuffer.isView(args[0])) {
+            inputBuffer = new Uint8Array(args[0].buffer, args[0].byteOffset, args[0].byteLength);
+        } else {
+            throw new Error('[ByteReader] buffer must be ArrayBuffer, Uint8Array, or Buffer');
+        }
+
+        // Force a copy of the buffer to avoid pooling / leftover memory
+        const copied = new Uint8Array(inputBuffer.length);
+        copied.set(inputBuffer);
+
+        super(copied.buffer, copied.byteOffset, copied.byteLength);
+
+        this.chunkBuffer = new Uint8Array();
+        this.index = 0;
+    }
 
 	SetIndex(n: number) { this.index = n }
 	GetIndex() { return this.index }
