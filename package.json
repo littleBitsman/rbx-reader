@@ -25,7 +25,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "jsdom": "^29.0.1"
+    "jsdom": "^30.0.0"
   },
   "scripts": {
     "build": "tsc && npm run copy-wasm",
